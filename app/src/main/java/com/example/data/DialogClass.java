@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
 
@@ -18,6 +20,7 @@ public class DialogClass extends AppCompatDialogFragment {
     private EditText name;
     private EditText age;
     private Spinner gender;
+    private Button button;
 
     private DialogClassListener listener;
 
@@ -36,6 +39,8 @@ public class DialogClass extends AppCompatDialogFragment {
         age = view.findViewById(R.id.age);
         gender = view.findViewById(R.id.gender);
 
+        button = view.findViewById(R.id.submit_button);
+
         gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -51,24 +56,23 @@ public class DialogClass extends AppCompatDialogFragment {
         adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gender.setAdapter(adp);
 
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                username = name.getText().toString();
+                userAge = age.getText().toString();
+                if(username.isEmpty() || userAge.isEmpty()){
+                    Toast.makeText(getContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    listener.applyTexts(username, userAge, userGender);
+                }
+            }
+        });
 
 
-        builder.setView(view)
-                .setTitle("Hi! Please enter your details")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        username = name.getText().toString();
-                        userAge = age.getText().toString();
-                        listener.applyTexts(username,userAge,userGender);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                });
+        builder.setView(view);
 
         return builder.create();
     }
@@ -85,6 +89,8 @@ public class DialogClass extends AppCompatDialogFragment {
 
 
     }
+
+
 
     public interface DialogClassListener{
         void applyTexts(String Username, String Userage, String Usergender);
