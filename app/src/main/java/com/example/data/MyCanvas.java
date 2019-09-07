@@ -19,7 +19,7 @@ public class MyCanvas extends View {
     private Paint   mPaint;
     public int width;
     public  int height;
-    private Bitmap  mBitmap;
+    public Bitmap  mBitmap;
     private Canvas  mCanvas;
     private Path    mPath;
     private Paint   mBitmapPaint;
