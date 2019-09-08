@@ -2,6 +2,7 @@ package com.example.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -66,5 +67,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d("TAG","image data inserted");
         if(inser == -1) return false;
         else return true;
+    }
+
+    public Cursor getdata_user(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("Select * from user",null);
+        return res;
     }
 }

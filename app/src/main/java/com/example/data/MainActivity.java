@@ -3,6 +3,7 @@ package com.example.data;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -69,7 +70,10 @@ public class MainActivity extends AppCompatActivity implements DialogClass.Dialo
         int id = item.getItemId();
         switch (id){
             case R.id.recorded_data:
-
+                Intent intent = new Intent(this,Recorded_Data.class);
+                startActivity(intent);
+                finish();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
