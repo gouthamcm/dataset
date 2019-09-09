@@ -5,12 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import java.sql.Blob;
+import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -20,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
 
-    private static final String table_user = "Create Table user (id integer primary key autoincrement, name text, age text, gender text)";
+    private static final String table_user = "Create Table user (id integer primary key, name text, age text, gender text)";
 
     private static final String table_images = "Create Table user_images (id integer primary key autoincrement,image BLOB not null, user_id integer,FOREIGN KEY(user_id) references user(id) )";
 
@@ -74,4 +76,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("Select * from user",null);
         return res;
     }
+
+    public Cursor getImage_user(int pos){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("Select * from user_images where user_id = "+pos,null);
+        return res;
+    }
+//    public ArrayList<Bitmap> getImage_user(){
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor cursor = db.rawQuery("Select * from user_images where user_id = pos",null);
+//    }
 }
