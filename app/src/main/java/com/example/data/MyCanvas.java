@@ -143,7 +143,7 @@ protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(12);
+        mPaint.setStrokeWidth(5);
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
         circlePaint = new Paint();

@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements DialogClass.Dialo
             public void onClick(View v) {
                 byte[] data = getBitmapAsByteArray(myCanvas.mBitmap);
                 db.insert_image(data);
+                myCanvas.clear();
+                Toast.makeText(MainActivity.this,"Data submitted successfully",Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -72,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements DialogClass.Dialo
             case R.id.recorded_data:
                 Intent intent = new Intent(this,Recorded_Data.class);
                 startActivity(intent);
-                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -15,6 +15,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -47,7 +48,8 @@ public class data_Set extends AppCompatActivity {
         user_id = (int) bundle.get("position");
         user_id+=1;
         db = new DatabaseHelper(this);
-        data_set_class = db.getALL();
+        data_set_class = db.getALL(user_id);
+
 
         listView.setAdapter(new GridAdapter(getApplicationContext(),data_set_class));
 //        cursor = db.getImage_user();
@@ -116,6 +118,16 @@ public class data_Set extends AppCompatActivity {
                 imageView = (ImageView) convertView;
             }
             Data_set_class picture = DATASET.get(position);
+//            if(picture.getUser_id() == user_id){
+//                byte[] outImage=picture.getImage();
+//                ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
+//                Bitmap theImage = BitmapFactory.decodeStream(imageStream);
+//                imageView.setImageBitmap(theImage);
+//            }
+//            else{
+//                Toast.makeText(context, "nothing to display", Toast.LENGTH_SHORT).show();
+//            }
+//
             byte[] outImage=picture.getImage();
             ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
             Bitmap theImage = BitmapFactory.decodeStream(imageStream);

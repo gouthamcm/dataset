@@ -102,11 +102,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //    }
 
 
-    public List<Data_set_class> getALL(){
+    public List<Data_set_class> getALL(int user){
         SQLiteDatabase db = this.getWritableDatabase();
         List<Data_set_class> data = new ArrayList<Data_set_class>();
 
-        Cursor cursor = db.rawQuery("Select * from user_images",null);
+        Cursor cursor = db.rawQuery("Select * from user_images where user_id ="+String.valueOf(user),null);
 
         if(cursor.moveToFirst()){
             do{
