@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -77,13 +78,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getImage_user(int pos){
+    public Cursor getImage_user(){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("Select * from user_images where user_id = "+pos,null);
+        Cursor res = db.rawQuery("Select * from user_images",null);
         return res;
     }
 //    public ArrayList<Bitmap> getImage_user(){
 //        SQLiteDatabase db = this.getWritableDatabase();
 //        Cursor cursor = db.rawQuery("Select * from user_images where user_id = pos",null);
+////    }
+//    public List<data_Set> getData(){
+//        data_Set product = null;
+//        List<data_Set> productList = new ArrayList<>();
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor cursor = db.rawQuery("SELECT * FROM Product", null);
+//        cursor.moveToFirst();
+//        while(!cursor.isAfterLast()){
+//            product = new data_Set(cursor.getInt(0), cursor.getBlob(1), cursor.getInt(2));
+//            productList.add(product);
+//            cursor.moveToNext();
+//        }
+//        return productList;
 //    }
+
+
+    public List<Data_set_class> getALL(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<Data_set_class> data = new ArrayList<Data_set_class>();
+
+        Cursor cursor = db.rawQuery("Select * from user_images",null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Data_set_class data_set = new Data_set_class();
+                data_set.setId(cursor.getInt(0));
+                data_set.setImage(cursor.getBlob(1));
+                data_set.setUser_id(cursor.getInt(2));
+                 data.add(data_set);
+            }while(cursor.moveToNext());
+
+        }
+        return data;
+    }
 }

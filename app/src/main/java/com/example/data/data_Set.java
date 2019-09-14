@@ -13,24 +13,32 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class data_Set extends AppCompatActivity {
     DatabaseHelper db;
-    private GridView gridView;
+    private GridView listView;
     private int user_id;
-    Cursor cursor;
+
     TextView textView;
 
-    private int j=0;
+    ArrayList<Data_set_class> DATA = new ArrayList<Data_set_class>();
     Bitmap[] images;
+
+    List<Data_set_class> data_set_class;
+
     Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data__set);
 
-        gridView = findViewById(R.id.gridView);
+        listView = findViewById(R.id.listView);
         textView = findViewById(R.id.textView);
 
         Intent intent = getIntent();
@@ -38,38 +46,48 @@ public class data_Set extends AppCompatActivity {
 
         user_id = (int) bundle.get("position");
         user_id+=1;
+        db = new DatabaseHelper(this);
+        data_set_class = db.getALL();
 
-
-        cursor = db.getImage_user(user_id);
-
-
-        if(cursor.getCount()==0){
-            gridView.setVisibility(View.INVISIBLE);
-            textView.setVisibility(View.VISIBLE);
-        }
-        else{
-            images = new Bitmap[cursor.getCount()];
-            while(cursor.moveToNext()){
-                byte[] img = cursor.getBlob(1);
-                bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                images[j++] = bitmap;
-            }
-            gridView.setAdapter(new GridAdapter(getApplicationContext()));
-
-        }
+        listView.setAdapter(new GridAdapter(getApplicationContext(),data_set_class));
+//        cursor = db.getImage_user();
+//
+//
+//        if(cursor.getCount()==0){
+//            gridView.setVisibility(View.INVISIBLE);
+//            textView.setVisibility(View.VISIBLE);
+//        }
+//        else{
+//            //images = new Bitmap[cursor.getCount()];
+//            while(cursor.moveToNext()){
+//                byte[] img = cursor.getBlob(1);
+//                long user_id1 = cursor.getInt(2);
+//                long id = cursor.getInt(0);
+//                if(user_id1 == user_id){
+//
+//                }
+//                bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+//                //   images[j++] = bitmap;
+//            }
+//            gridView.setAdapter(new GridAdapter(getApplicationContext()));
+//
+//        }
 
     }
 
     public class GridAdapter extends BaseAdapter{
 
         Context context;
-        public GridAdapter(Context applicationContext) {
+        private List<Data_set_class> DATASET;
+        public GridAdapter(Context applicationContext, List<Data_set_class> mdata) {
+
             this.context = applicationContext;
+            this.DATASET = mdata;
         }
 
         @Override
         public int getCount() {
-            return images.length;
+            return DATASET.size();
         }
 
         @Override
@@ -97,7 +115,11 @@ public class data_Set extends AppCompatActivity {
             {
                 imageView = (ImageView) convertView;
             }
-            imageView.setImageBitmap(images[position]);
+            Data_set_class picture = DATASET.get(position);
+            byte[] outImage=picture.getImage();
+            ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
+            Bitmap theImage = BitmapFactory.decodeStream(imageStream);
+            imageView.setImageBitmap(theImage);
             return imageView;
 
         }
