@@ -46,20 +46,22 @@ public class MyCanvas extends View {
 //    public MyCanvas(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
 //        super(context, attrs, defStyleAttr, defStyleRes);
 //    }
-@Override
-protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-    super.onSizeChanged(w, h, oldw, oldh);
-    width=w;
-    height=h;
-    mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-    mCanvas = new Canvas(mBitmap);
-}
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        width=w;
+        height=h;
+        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        mCanvas = new Canvas(mBitmap);
+        mCanvas.drawColor(Color.BLACK);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         canvas.drawBitmap( mBitmap, 0, 0, mBitmapPaint);
+
         canvas.drawPath( mPath,  mPaint);
         canvas.drawPath( circlePath,  circlePaint);
     }
@@ -127,7 +129,7 @@ protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         //mBitmap=BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
         mCanvas = new Canvas(mBitmap);
-
+        mCanvas.drawColor(Color.BLACK);
         mPath = new Path();
 
         invalidate();
@@ -139,11 +141,11 @@ protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
-        mPaint.setColor(Color.GREEN);
+        mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(5);
+        mPaint.setStrokeWidth(20);
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
         circlePaint = new Paint();

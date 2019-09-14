@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -50,7 +51,8 @@ public class data_Set extends AppCompatActivity {
         db = new DatabaseHelper(this);
         data_set_class = db.getALL(user_id);
 
-
+        listView.setVerticalSpacing(1);
+        listView.setHorizontalSpacing(1);
         listView.setAdapter(new GridAdapter(getApplicationContext(),data_set_class));
 //        cursor = db.getImage_user();
 //
@@ -62,7 +64,7 @@ public class data_Set extends AppCompatActivity {
 //        else{
 //            //images = new Bitmap[cursor.getCount()];
 //            while(cursor.moveToNext()){
-//                byte[] img = cursor.getBlob(1);
+//                byte[] img = cursor.getBlob(tamil);
 //                long user_id1 = cursor.getInt(2);
 //                long id = cursor.getInt(0);
 //                if(user_id1 == user_id){
@@ -107,11 +109,15 @@ public class data_Set extends AppCompatActivity {
             ImageView imageView;
 
             if (convertView == null) {
-                imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams(500,500));
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-                imageView.setPadding(10, 15, 0, 15);
+                DisplayMetrics dm = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(dm);
+                int width = dm.widthPixels/2;
+                int height = dm.heightPixels/4;
+                imageView = new ImageView(context);
+                imageView.setLayoutParams(new GridView.LayoutParams(width,height));
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setPadding(1, 0, 0, 0);
             }
             else
             {

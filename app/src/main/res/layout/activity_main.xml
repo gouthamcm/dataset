@@ -6,10 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:padding="0dp"
+        android:layout_above="@id/canvas"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Draw this letter"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView"
+        android:layout_above="@+id/imageView"/>
+
     <com.example.data.MyCanvas
-        android:layout_width="500dp"
-        android:layout_height="500dp"
-        android:layout_above="@id/subimt"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+
+        android:layout_centerInParent="true"
         android:id="@+id/canvas"/>
     <Button
         android:layout_width="wrap_content"

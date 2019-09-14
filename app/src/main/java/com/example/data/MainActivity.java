@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -24,6 +25,16 @@ public class MainActivity extends AppCompatActivity implements DialogClass.Dialo
     Button submit;
     DialogClass dialogClass;
     Button reset;
+    ImageView imageView;
+    private int count=1;
+    Integer[] images_array = {R.drawable.tamil1,R.drawable.tamil2,R.drawable.tamil3,R.drawable.tamil4,R.drawable.tamil5,
+            R.drawable.tamil6,R.drawable.tamil7,R.drawable.tamil8,R.drawable.tamil9,R.drawable.tamil10,
+            R.drawable.tamil11,R.drawable.tamil12,R.drawable.tamil13,R.drawable.tamil14,R.drawable.tamil15,
+            R.drawable.tamil16,R.drawable.tamil17,R.drawable.tamil18,R.drawable.tamil19,R.drawable.tamil20,
+            R.drawable.tamil21,R.drawable.tamil22,R.drawable.tamil23,R.drawable.tamil24,R.drawable.tamil25,
+            R.drawable.tamil26,R.drawable.tamil27,R.drawable.tamil28,R.drawable.tamil29,R.drawable.tamil30,
+            R.drawable.tamil31,R.drawable.tamil32,R.drawable.tamil33,R.drawable.tamil34,R.drawable.tamil35,
+                                };
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -34,12 +45,15 @@ public class MainActivity extends AppCompatActivity implements DialogClass.Dialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        count=0;
         myCanvas = findViewById(R.id.canvas);
         myCanvas.setBackgroundColor(Color.BLACK);
         submit = findViewById(R.id.subimt);
         reset = findViewById(R.id.reset);
+        imageView = findViewById(R.id.imageView);
+        if(count==0) imageView.setImageDrawable(getResources().getDrawable(images_array[0]));
         db = new DatabaseHelper(this);
+
 
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements DialogClass.Dialo
                 db.insert_image(data);
                 myCanvas.clear();
                 Toast.makeText(MainActivity.this,"Data submitted successfully",Toast.LENGTH_LONG).show();
-
+                imageView.setImageDrawable(getResources().getDrawable(images_array[(count+1)%35 ]));
+                count+=1;
             }
         });
 

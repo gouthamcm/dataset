@@ -94,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        Cursor cursor = db.rawQuery("SELECT * FROM Product", null);
 //        cursor.moveToFirst();
 //        while(!cursor.isAfterLast()){
-//            product = new data_Set(cursor.getInt(0), cursor.getBlob(1), cursor.getInt(2));
+//            product = new data_Set(cursor.getInt(0), cursor.getBlob(tamil), cursor.getInt(2));
 //            productList.add(product);
 //            cursor.moveToNext();
 //        }
