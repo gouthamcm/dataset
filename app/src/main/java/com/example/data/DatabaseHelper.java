@@ -30,7 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        Toast.makeText(context, "Database created", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "Database created", Toast.LENGTH_SHORT).show();
     }
 
     @Override

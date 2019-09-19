@@ -46,9 +46,10 @@ public class Recorded_Data extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(Recorded_Data.this, String.valueOf(id), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Recorded_Data.this, String.valueOf(id), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Recorded_Data.this,data_Set.class);
                 intent.putExtra("position",position);
+                //intent.putExtra("name",cursor.getString(1));
                 startActivity(intent);
             }
         });

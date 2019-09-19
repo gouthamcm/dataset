@@ -7,8 +7,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -19,6 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +35,12 @@ public class data_Set extends AppCompatActivity {
     DatabaseHelper db;
     private GridView listView;
     private int user_id;
-
+    private String user_name;
     TextView textView;
 
     ArrayList<Data_set_class> DATA = new ArrayList<Data_set_class>();
     Bitmap[] images;
+    int i=0;
 
     List<Data_set_class> data_set_class;
 
@@ -47,6 +57,8 @@ public class data_Set extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
 
         user_id = (int) bundle.get("position");
+        //user_name = (String) bundle.get("name");
+
         user_id+=1;
         db = new DatabaseHelper(this);
         data_set_class = db.getALL(user_id);
@@ -54,30 +66,34 @@ public class data_Set extends AppCompatActivity {
         listView.setVerticalSpacing(1);
         listView.setHorizontalSpacing(1);
         listView.setAdapter(new GridAdapter(getApplicationContext(),data_set_class));
-//        cursor = db.getImage_user();
-//
-//
-//        if(cursor.getCount()==0){
-//            gridView.setVisibility(View.INVISIBLE);
-//            textView.setVisibility(View.VISIBLE);
-//        }
-//        else{
-//            //images = new Bitmap[cursor.getCount()];
-//            while(cursor.moveToNext()){
-//                byte[] img = cursor.getBlob(tamil);
-//                long user_id1 = cursor.getInt(2);
-//                long id = cursor.getInt(0);
-//                if(user_id1 == user_id){
-//
-//                }
-//                bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-//                //   images[j++] = bitmap;
-//            }
-//            gridView.setAdapter(new GridAdapter(getApplicationContext()));
-//
-//        }
+
 
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu_images,menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        switch(id){
+//            case R.id.share:
+//                //share();
+//                Toast.makeText(this, "sharing", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.save:
+//                //saveToSd();
+//                Toast.makeText(this, "save", Toast.LENGTH_SHORT).show();
+//                break;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+
+
 
     public class GridAdapter extends BaseAdapter{
 
@@ -124,22 +140,88 @@ public class data_Set extends AppCompatActivity {
                 imageView = (ImageView) convertView;
             }
             Data_set_class picture = DATASET.get(position);
-//            if(picture.getUser_id() == user_id){
-//                byte[] outImage=picture.getImage();
-//                ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
-//                Bitmap theImage = BitmapFactory.decodeStream(imageStream);
-//                imageView.setImageBitmap(theImage);
-//            }
-//            else{
-//                Toast.makeText(context, "nothing to display", Toast.LENGTH_SHORT).show();
-//            }
-//
+
             byte[] outImage=picture.getImage();
             ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
             Bitmap theImage = BitmapFactory.decodeStream(imageStream);
             imageView.setImageBitmap(theImage);
-            return imageView;
 
+
+            String filename = "image_" + String.valueOf(i++) + ".png";
+
+            File sd = Environment.getExternalStorageDirectory();
+            File folder = new File(sd + "/WALLPAPER");
+            folder.mkdir();
+
+            File dest = new File(folder, filename);
+            try {
+                FileOutputStream out;
+                out = new FileOutputStream(dest);
+                theImage.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            //Toast.makeText(context, "image saved at" + dest.toString(), Toast.LENGTH_SHORT).show();
+            return imageView;
         }
+    }
+
+    public void saveToSd(){
+        int pos = 0;
+
+        while(pos<data_set_class.size()){
+            Data_set_class picture = data_set_class.get(pos);
+            byte[] outImage=picture.getImage();
+            ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
+            Bitmap theImage = BitmapFactory.decodeStream(imageStream);
+
+            String filename = "Image_"+String.valueOf(pos+1)+".png";
+            File sd = Environment.getExternalStorageDirectory();
+            File folder = new File(sd + "/" + user_name);
+            folder.mkdir();
+
+            File dest = new File(folder, filename);
+            try {
+                FileOutputStream out;
+                out = new FileOutputStream(dest);
+                theImage.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            pos++;
+        }
+
+    }
+
+    public void share(){
+        Intent shareIntent = new Intent();
+
+        shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+
+        ArrayList<Uri> files = new ArrayList<Uri>();
+        int pos = 0;
+
+        while(pos<data_set_class.size()){
+            Data_set_class picture = data_set_class.get(pos);
+            byte[] outImage=picture.getImage();
+            ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
+            Bitmap theImage = BitmapFactory.decodeStream(imageStream);
+
+            //files.add(  )
+            pos++;
+        }
+        shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
     }
 }
