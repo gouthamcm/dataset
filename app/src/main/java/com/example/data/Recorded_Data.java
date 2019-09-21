@@ -19,7 +19,11 @@ public class Recorded_Data extends AppCompatActivity {
 
     private DatabaseHelper db;
     private ListView listView;
+
     Cursor cursor;
+    ArrayList<String> username = new ArrayList<>();
+    ArrayList<String> userage = new ArrayList<>();
+    ArrayList<String> usergender = new ArrayList<>();
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -38,6 +42,9 @@ public class Recorded_Data extends AppCompatActivity {
         else{
             while(cursor.moveToNext()){
                 list.add(cursor.getString(1));
+                userage.add(cursor.getString(2));
+                usergender.add(cursor.getString(3));
+                username.add(cursor.getString(1));
                 ListAdapter adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,list);
                 listView.setAdapter(adapter);
             }
@@ -48,7 +55,12 @@ public class Recorded_Data extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Toast.makeText(Recorded_Data.this, String.valueOf(id), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Recorded_Data.this,data_Set.class);
-                intent.putExtra("position",position);
+                Bundle extras = new Bundle();
+                extras.putInt("position",position);
+                extras.putString("name",username.get(position));
+                extras.putString("age",userage.get(position));
+                extras.putString("gender",usergender.get(position));
+                intent.putExtras(extras);
                 //intent.putExtra("name",cursor.getString(1));
                 startActivity(intent);
             }
