@@ -1,9 +1,13 @@
 package com.example.data;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -23,6 +27,8 @@ import java.io.ByteArrayOutputStream;
 public class MainActivity extends AppCompatActivity implements DialogClass.DialogClassListener {
     MyCanvas myCanvas;
     Button submit;
+
+
     DialogClass dialogClass;
     Button reset;
     ImageView imageView;
@@ -70,8 +76,10 @@ public class MainActivity extends AppCompatActivity implements DialogClass.Dialo
                 Toast.makeText(MainActivity.this,"Data submitted successfully",Toast.LENGTH_LONG).show();
                 imageView.setImageDrawable(getResources().getDrawable(images_array[(count+1)%35 ]));
                 count+=1;
+                if(count >=35) submit.setEnabled(false);
             }
         });
+
 
         openDialog();
     }
@@ -133,4 +141,6 @@ public class MainActivity extends AppCompatActivity implements DialogClass.Dialo
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
         return outputStream.toByteArray();
     }
+
+
 }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/save"
-        android:title="Save Images"/>
+
+    <item android:title="Save Images"
+        android:id="@+id/save" />
     <item android:title="Share Images"
-        android:id="@+id/share"/>
+        android:id="@+id/share" />
 </menu>

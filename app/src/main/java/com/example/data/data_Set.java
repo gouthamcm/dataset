@@ -1,16 +1,21 @@
 package com.example.data;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -37,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class data_Set extends AppCompatActivity {
+
     DatabaseHelper db;
     private GridView listView;
     private int user_id;
@@ -50,6 +56,11 @@ public class data_Set extends AppCompatActivity {
     ArrayList<Data_set_class> DATA = new ArrayList<Data_set_class>();
     Bitmap[] images;
     int i=0;
+
+    ArrayList<File> fileList;
+
+    private int COUNT_OF = 0;
+
     int j=0;
     List<Data_set_class> data_set_class;
 
@@ -81,7 +92,8 @@ public class data_Set extends AppCompatActivity {
         listView.setAdapter(gridAdapter);
         //Log.d("TAG","COMPLETED");
         i=0;
-
+        fileList = new ArrayList<>();
+        //check_permission();
     }
 
     @Override
@@ -95,14 +107,21 @@ public class data_Set extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch(id){
-            case R.id.share:
-                share();
-                //Toast.makeText(this, "sharing", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.save:
-                //saveToSd();
-                //Toast.makeText(this, "save", Toast.LENGTH_SHORT).show();
+                if(isPermissionGranted()){
+                    save_to_sd();
+                    COUNT_OF++;
+                }
                 break;
+            case R.id.share:
+                if(isPermissionGranted()){
+                    save_to_sd();
+                    share();
+                }
+                break;
+
+
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -161,29 +180,7 @@ public class data_Set extends AppCompatActivity {
             imageView.setImageBitmap(theImage);
 
 
-//            String filename = "image_" + String.valueOf(i++) + ".png";
-//
-//            File sd = Environment.getExternalStorageDirectory();
-//            File folder = new File(sd + "/"+user_name+user_age+user_gender+"/");
-//            folder.mkdir();
-//
-//            File dest = new File(folder, filename);
-//            try {
-//                FileOutputStream out;
-//                out = new FileOutputStream(dest);
-//                theImage.compress(Bitmap.CompressFormat.PNG, 100, out);
-//                out.flush();
-//                out.close();
-//            } catch (FileNotFoundException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//            //Toast.makeText(context, "image saved at" + dest.toString(), Toast.LENGTH_SHORT).show();
-//            //MediaStore.Images.Media.insertImage(getContentResolver(), theImage, user_name, user_age);
-//            Log.d("TAG",dest.toString());
+
 
             return imageView;
         }
@@ -191,44 +188,11 @@ public class data_Set extends AppCompatActivity {
 
 
 
-    public void saveToSd(){
-        int pos = 0;
-
-        while(pos<data_set_class.size()){
-            Data_set_class picture = data_set_class.get(pos);
-            byte[] outImage=picture.getImage();
-            ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
-            Bitmap theImage = BitmapFactory.decodeStream(imageStream);
-
-            String filename = "Image_"+String.valueOf(pos+1)+".png";
-            File sd = Environment.getExternalStorageDirectory();
-            File folder = new File(sd + "/" + user_name);
-            folder.mkdir();
-
-            File dest = new File(folder, filename);
-            try {
-                FileOutputStream out;
-                out = new FileOutputStream(dest);
-                theImage.compress(Bitmap.CompressFormat.PNG, 100, out);
-                out.flush();
-                out.close();
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            pos++;
-        }
-
-    }
-
-    public void share(){
+    public void save_to_sd(){
         Log.d("TAG","COMPLETED");
         //Toast.makeText(this, String.valueOf(gridAdapter.getCount()), Toast.LENGTH_SHORT).show();
 
-        ArrayList<File> fileList = new ArrayList<>();
+        fileList = new ArrayList<>();
         ArrayList<Uri> uri = new ArrayList<>();
         for(j=0;j<gridAdapter.getCount();j++){
 
@@ -239,10 +203,10 @@ public class data_Set extends AppCompatActivity {
             Bitmap bm = BitmapFactory.decodeStream(imageStream);
 
 
-            String filename = "image_" + String.valueOf(j) + ".png";
+            String filename = "tamil_" + String.valueOf(j) + ".png";
 
             File sd = Environment.getExternalStorageDirectory();
-            File folder = new File(sd + "/"+user_name+user_age+user_gender+"/");
+            File folder = new File(sd + "/"+user_name+"-"+user_age+"-"+user_gender+"/");
             folder.mkdir();
 
             File dest = new File(folder, filename);
@@ -273,15 +237,78 @@ public class data_Set extends AppCompatActivity {
 
 
         }
-//        for(File file : fileList ) {
-//            Uri uri_ = Uri.fromFile(file);
-//            uri.add(uri_);
-//        }
-//        Intent intent = new Intent();
-//        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-//        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uri);
-//        intent.setType("image/*");
-//        startActivity(Intent.createChooser(intent, "select some pic"));
-//
+
+
+
     }
+
+    public void share(){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
+        intent.setType("image/*"); /* This example is sharing jpeg images. */
+
+        ArrayList<Uri> files = new ArrayList<Uri>();
+
+        for(File path : fileList /* List of the files you want to send */) {
+            File file = new File(path.toString());
+            Uri photoURI = FileProvider.getUriForFile(data_Set.this,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    path);
+            //Uri uri1 = Uri.fromFile(file);
+            files.add(photoURI);
+        }
+
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"purushothsankari@gmail.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Tamil Script");
+        intent.putExtra(Intent.EXTRA_TEXT, "Name: "+user_name + "\n" + "Age: " + user_age + "\n"
+                        + "Gender: " + user_gender);
+        startActivity(intent);
+    }
+
+
+    public  boolean isPermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("TAG","Permission is granted");
+                return true;
+            } else {
+
+                Log.v("TAG","Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("TAG","Permission is granted");
+            return true;
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+
+            case 1: {
+
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
+                    save_to_sd();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
 }
